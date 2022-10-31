@@ -2,9 +2,10 @@ from django.shortcuts import render
 from django.http import JsonResponse, HttpResponse
 
 from rest_framework.response import Response
-# Create your views here.
+from rest_framework import generics
 
-
+from .models import HngUserModel
+from .userSerializer import HngUserSerializer
 
 def user_detail(response, *args, **kwargs):
     
@@ -32,3 +33,10 @@ def user_detail(response, *args, **kwargs):
         JsonResponse(data={'something when wrong, please retry in 2 minutes'})
 
     return JsonResponse(data=context,content_type='application/json')
+
+
+
+class User_views(generics.ListCreateAPIView):
+
+    queryset = HngUserModel.objects.all()
+    serializer_class = HngUserSerializer
