@@ -3,7 +3,7 @@
 
 ##### Sample POST
 ```
--POST: [https://lordbees.pythonanywhere.com/user/cal
+-POST: [https://lordbees.pythonanywhere.com/user/cal/
 
     {
         "operation_type": "addition",
