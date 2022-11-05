@@ -51,8 +51,8 @@ def perform_calculation(request, operation_type=None, output=None):
         data = json.loads(request.body)
     
 
-    first_value = data['y']
-    second_value = data['x']
+    first_value = int(data['y'])
+    second_value = int(data['x'])
 
     ops = data["operation_type"]
 
@@ -64,7 +64,7 @@ def perform_calculation(request, operation_type=None, output=None):
 
     if operation in operations:
         operation_type = operation
-        output = eval(f"{first_value}{operations[operation_type]}{second_value}")
+        output = int(eval(f"{first_value}{operations[operation_type]}{second_value}"))
     
     else:
         operation_type = data['operation_type']
