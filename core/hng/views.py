@@ -1,11 +1,11 @@
 from django.shortcuts import render
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpRequest
+from django.views.decorators.csrf import csrf_exempt
 
-from rest_framework.response import Response
-from rest_framework import generics
 
-from .models import HngUserModel
-from .userSerializer import HngUserSerializer
+import os
+import openai
+import json
 
 def user_detail(response, *args, **kwargs):
     
@@ -36,7 +36,44 @@ def user_detail(response, *args, **kwargs):
 
 
 
-class User_views(generics.ListCreateAPIView):
 
-    queryset = HngUserModel.objects.all()
-    serializer_class = HngUserSerializer
+@csrf_exempt
+def perform_calculation(request, operation_type=None, output=None):
+
+    operations = {"addition": "+", "subtraction": "-", "multiplication": "*",}
+
+    if request.POST:
+        data = request.POST
+    elif request.GET:
+        return HttpResponse({"Only POST requests allowed in this endpoint"})
+    
+    else:
+        data = json.loads(request.body)
+    
+
+    first_value = data['y']
+    second_value = data['x']
+
+    ops = data["operation_type"]
+
+    # pre-processing-convert to lower case-remove white spaces-
+
+    operation = ops.lower().strip().replace(" ", "")
+
+    # check if operation ia in operations dictionary
+
+    if operation in operations:
+        operation_type = operation
+        output = eval(f"{first_value}{operations[operation_type]}{second_value}")
+    
+    else:
+        operation_type = data['operation_type']
+        output = "Invalid operation_type: {0}.Please enter a valid operational type-like adittion | multiplication | substraction".format(operation_type)
+
+    context = {
+        "slackUsername": "Chiefkufre",
+        "result": output,
+        "operation_type": operation_type
+    }
+    
+    return JsonResponse(context)
