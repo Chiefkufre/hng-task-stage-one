@@ -4,7 +4,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 import os
-import openai
+# import openai
 import json
 
 def user_detail(response, *args, **kwargs):
